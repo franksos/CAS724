@@ -1,0 +1,121 @@
+Train on 6433 samples, validate on 338 samples
+Epoch 1/10
+2018-03-27 11:47:25.341218: I tensorflow/core/platform/cpu_feature_guard.cc:137] Your CPU supports instructions that this TensorFlow binary was not compiled to use: SSE4.2 AVX AVX2 FMA
+6433/6433 [==============================] - 22s 3ms/step - loss: 1.6917 - acc: 0.3184 - val_loss: 1.8322 - val_acc: 0.3550
+Epoch 2/10
+6433/6433 [==============================] - 20s 3ms/step - loss: 1.6269 - acc: 0.3437 - val_loss: 2.0048 - val_acc: 0.2189
+Epoch 3/10
+6433/6433 [==============================] - 20s 3ms/step - loss: 1.5951 - acc: 0.3552 - val_loss: 1.6752 - val_acc: 0.3521
+Epoch 4/10
+6433/6433 [==============================] - 21s 3ms/step - loss: 1.5477 - acc: 0.3683 - val_loss: 1.9750 - val_acc: 0.2396
+Epoch 5/10
+6433/6433 [==============================] - 20s 3ms/step - loss: 1.4839 - acc: 0.4001 - val_loss: 1.7637 - val_acc: 0.2515
+Epoch 6/10
+6433/6433 [==============================] - 20s 3ms/step - loss: 1.4575 - acc: 0.4017 - val_loss: 2.0425 - val_acc: 0.2515
+Epoch 7/10
+6433/6433 [==============================] - 20s 3ms/step - loss: 1.4362 - acc: 0.4185 - val_loss: 1.9290 - val_acc: 0.2574
+Epoch 8/10
+6433/6433 [==============================] - 20s 3ms/step - loss: 1.4165 - acc: 0.4264 - val_loss: 1.9561 - val_acc: 0.2367
+Epoch 9/10
+6433/6433 [==============================] - 20s 3ms/step - loss: 1.3954 - acc: 0.4357 - val_loss: 1.9774 - val_acc: 0.2722
+Epoch 10/10
+6433/6433 [==============================] - 21s 3ms/step - loss: 1.3709 - acc: 0.4435 - val_loss: 2.0502 - val_acc: 0.2663
+> end_time <- Sys.time()
+> 
+> # Evaluation
+> scores <- model %>% evaluate(x_test, y_test, verbose = 0)
+> 
+> # Output metrics
+> start_time
+[1] "2018-03-27 11:47:21 EDT"
+> end_time
+[1] "2018-03-27 11:50:52 EDT"
+> 
+> # Report of three test groups
+> cat('Test loss:', scores[[1]], '\n')
+Test loss: 2.153869 
+> cat('Test accuracy:', scores[[2]], '\n')
+Test accuracy: 0.2244898 
+> 
+> # Further reports - report precision, recall and F1 score
+> y_prob <- model %>% predict(x_test) 
+> y_pred <- prob_to_class(y_prob)
+> 
+> entitylevel <- c("Character","Event","Location", 
++                  "Organization", "Person","Product","Thing")
+> y_pred <- factor(y_pred, levels = c(1:7))
+> levels(y_pred) <- entitylevel
+> 
+> mx <- confusionMatrix(y_pred, y_truth)
+> 
+> cat('Test set A details: \n')
+Test set A details: 
+> mx
+Confusion Matrix and Statistics
+
+              Reference
+Prediction     Character Event Location Organization Person Product Thing
+  Character            0     0        0            0      0       0     0
+  Event                0     0        1            3      3      12     1
+  Location             8     4        7            7     19       3     1
+  Organization         5     0        3           18     17      21     2
+  Person               8     6       10           41     73      85    14
+  Product              0     0        0            4      8       0     0
+  Thing                0     2        2            1     14      37     1
+
+Overall Statistics
+                                          
+               Accuracy : 0.2245          
+                 95% CI : (0.1864, 0.2663)
+    No Information Rate : 0.3583          
+    P-Value [Acc > NIR] : 1               
+                                          
+                  Kappa : 0.0174          
+ Mcnemar's Test P-Value : NA              
+
+Statistics by Class:
+
+                     Class: Character Class: Event Class: Location Class: Organization
+Sensitivity                   0.00000      0.00000         0.30435             0.24324
+Specificity                   1.00000      0.95338         0.89952             0.86921
+Pos Pred Value                    NaN      0.00000         0.14286             0.27273
+Neg Pred Value                0.95238      0.97150         0.95918             0.85067
+Prevalence                    0.04762      0.02721         0.05215             0.16780
+Detection Rate                0.00000      0.00000         0.01587             0.04082
+Detection Prevalence          0.00000      0.04535         0.11111             0.14966
+Balanced Accuracy             0.50000      0.47669         0.60193             0.55623
+                     Class: Person Class: Product Class: Thing
+Sensitivity                 0.5448        0.00000     0.052632
+Specificity                 0.4658        0.95760     0.867299
+Pos Pred Value              0.3080        0.00000     0.017544
+Neg Pred Value              0.7010        0.63170     0.953125
+Prevalence                  0.3039        0.35828     0.043084
+Detection Rate              0.1655        0.00000     0.002268
+Detection Prevalence        0.5374        0.02721     0.129252
+Balanced Accuracy           0.5053        0.47880     0.459965
+> mx[4]
+$byClass
+                    Sensitivity Specificity Pos Pred Value Neg Pred Value  Precision
+Class: Character     0.00000000   1.0000000            NaN      0.9523810         NA
+Class: Event         0.00000000   0.9533800     0.00000000      0.9714964 0.00000000
+Class: Location      0.30434783   0.8995215     0.14285714      0.9591837 0.14285714
+Class: Organization  0.24324324   0.8692098     0.27272727      0.8506667 0.27272727
+Class: Person        0.54477612   0.4657980     0.30801688      0.7009804 0.30801688
+Class: Product       0.00000000   0.9575972     0.00000000      0.6317016 0.00000000
+Class: Thing         0.05263158   0.8672986     0.01754386      0.9531250 0.01754386
+                        Recall         F1 Prevalence Detection Rate Detection Prevalence
+Class: Character    0.00000000         NA 0.04761905    0.000000000           0.00000000
+Class: Event        0.00000000        NaN 0.02721088    0.000000000           0.04535147
+Class: Location     0.30434783 0.19444444 0.05215420    0.015873016           0.11111111
+Class: Organization 0.24324324 0.25714286 0.16780045    0.040816327           0.14965986
+Class: Person       0.54477612 0.39353100 0.30385488    0.165532880           0.53741497
+Class: Product      0.00000000        NaN 0.35827664    0.000000000           0.02721088
+Class: Thing        0.05263158 0.02631579 0.04308390    0.002267574           0.12925170
+                    Balanced Accuracy
+Class: Character            0.5000000
+Class: Event                0.4766900
+Class: Location             0.6019347
+Class: Organization         0.5562265
+Class: Person               0.5052871
+Class: Product              0.4787986
+Class: Thing                0.4599651

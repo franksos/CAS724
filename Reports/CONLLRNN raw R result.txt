@@ -1,0 +1,226 @@
+Train on 163652 samples, validate on 40914 samples
+Epoch 1/10
+163652/163652 [==============================] - 1418s 9ms/step - loss: 0.6735 - acc: 0.8276 - val_loss: 0.5876 - val_acc: 0.8566
+Epoch 2/10
+163652/163652 [==============================] - 1436s 9ms/step - loss: 0.5377 - acc: 0.8416 - val_loss: 0.4215 - val_acc: 0.8694
+Epoch 3/10
+163652/163652 [==============================] - 2034s 12ms/step - loss: 0.4237 - acc: 0.8602 - val_loss: 0.4270 - val_acc: 0.8603
+Epoch 4/10
+163652/163652 [==============================] - 1721s 11ms/step - loss: 0.3719 - acc: 0.8750 - val_loss: 0.4665 - val_acc: 0.8700
+Epoch 5/10
+163652/163652 [==============================] - 1382s 8ms/step - loss: 0.3267 - acc: 0.8908 - val_loss: 0.3006 - val_acc: 0.9035
+Epoch 6/10
+163652/163652 [==============================] - 1803s 11ms/step - loss: 0.2939 - acc: 0.9020 - val_loss: 0.2638 - val_acc: 0.9133
+Epoch 7/10
+163652/163652 [==============================] - 1599s 10ms/step - loss: 0.2727 - acc: 0.9104 - val_loss: 0.3742 - val_acc: 0.8665
+Epoch 8/10
+163652/163652 [==============================] - 1510s 9ms/step - loss: 0.2562 - acc: 0.9168 - val_loss: 0.2425 - val_acc: 0.9237
+Epoch 9/10
+163652/163652 [==============================] - 1613s 10ms/step - loss: 0.2409 - acc: 0.9222 - val_loss: 0.2893 - val_acc: 0.9062
+Epoch 10/10
+163652/163652 [==============================] - 1618s 10ms/step - loss: 0.2298 - acc: 0.9262 - val_loss: 0.2434 - val_acc: 0.9252
+> end_time <- Sys.time()
+> 
+> # Evaluation
+> scores_a <- model %>% evaluate(x_testa, y_testa, verbose = 0)
+> scores_b <- model %>% evaluate(x_testb, y_testb, verbose = 0)
+> scores_c <- model %>% evaluate(x_testc, y_testc, verbose = 0)
+> 
+> # Output metrics
+> start_time
+[1] "2018-03-25 10:51:48 EDT"
+> end_time
+[1] "2018-03-25 15:20:52 EDT"
+> 
+> # Report of three test groups
+> cat('Test Group A\n')
+Test Group A
+> cat('Test loss:', scores_a[[1]], '\n')
+Test loss: 0.2488988 
+> cat('Test accuracy:', scores_a[[2]], '\n')
+Test accuracy: 0.9236094 
+> cat('Test Group B\n')
+Test Group B
+> cat('Test loss:', scores_b[[1]], '\n')
+Test loss: 0.2673152 
+> cat('Test accuracy:', scores_b[[2]], '\n')
+Test accuracy: 0.9136183 
+> cat('Test Group C\n')
+Test Group C
+> cat('Test loss:', scores_c[[1]], '\n')
+Test loss: 0.2010656 
+> cat('Test accuracy:', scores_c[[2]], '\n')
+Test accuracy: 0.9305556 
+> 
+> # Further reports - report precision, recall and F1 score
+> y_trutha <- readRDS('CoNLL2003/y_trutha.rds')
+> y_truthb <- readRDS('CoNLL2003/y_truthb.rds')
+> y_truthc <- readRDS('CoNLL2003/y_truthc.rds')
+> 
+> y_proba <- model %>% predict(x_testa)
+> y_probb <- model %>% predict(x_testb)
+> y_probc <- model %>% predict(x_testc)
+> 
+> y_preda <- prob_to_class(y_proba)
+> y_predb <- prob_to_class(y_probb)
+> y_predc <- prob_to_class(y_probc)
+> 
+> entitylevel <- c("O", "LOC","MISC","ORG","PER")
+> 
+> y_preda <- factor(y_preda, levels = c(1:5))
+> y_predb <- factor(y_predb, levels = c(1:5))
+> y_predc <- factor(y_predc, levels = c(1:5))
+> levels(y_preda) <- entitylevel
+> levels(y_predb) <- entitylevel
+> levels(y_predc) <- entitylevel
+> 
+> mx_a <- confusionMatrix(y_preda, y_trutha)
+> mx_b <- confusionMatrix(y_predb, y_truthb)
+> mx_c <- confusionMatrix(y_predc, y_truthc)
+> 
+> cat('Test set A details: \n')
+Test set A details: 
+> mx_a
+Confusion Matrix and Statistics
+
+          Reference
+Prediction     O   LOC  MISC   ORG   PER
+      O    42329   125   369   334   190
+      LOC    109  1398   106   248   196
+      MISC    21     8   381    19     1
+      ORG    289   346   278  1121   350
+      PER    230   217   134   370  2408
+
+Overall Statistics
+                                          
+               Accuracy : 0.9236          
+                 95% CI : (0.9213, 0.9259)
+    No Information Rate : 0.8333          
+    P-Value [Acc > NIR] : < 2.2e-16       
+                                          
+                  Kappa : 0.7384          
+ Mcnemar's Test P-Value : < 2.2e-16       
+
+Statistics by Class:
+
+                     Class: O Class: LOC Class: MISC Class: ORG Class: PER
+Sensitivity            0.9849    0.66762    0.300473    0.53585    0.76566
+Specificity            0.8816    0.98668    0.999026    0.97448    0.98036
+Pos Pred Value         0.9765    0.67963    0.886047    0.47022    0.71688
+Neg Pred Value         0.9211    0.98595    0.982658    0.98026    0.98472
+Prevalence             0.8333    0.04060    0.024585    0.04056    0.06098
+Detection Rate         0.8207    0.02711    0.007387    0.02173    0.04669
+Detection Prevalence   0.8404    0.03988    0.008337    0.04622    0.06513
+Balanced Accuracy      0.9333    0.82715    0.649750    0.75516    0.87301
+> mx_a[4]
+$byClass
+            Sensitivity Specificity Pos Pred Value Neg Pred Value Precision    Recall
+Class: O      0.9848993   0.8816141      0.9765151      0.9211422 0.9765151 0.9848993
+Class: LOC    0.6676218   0.9866823      0.6796305      0.9859451 0.6796305 0.6676218
+Class: MISC   0.3004732   0.9990260      0.8860465      0.9826578 0.8860465 0.3004732
+Class: ORG    0.5358509   0.9744771      0.4702181      0.9802614 0.4702181 0.5358509
+Class: PER    0.7656598   0.9803642      0.7168800      0.9847153 0.7168800 0.7656598
+                   F1 Prevalence Detection Rate Detection Prevalence Balanced Accuracy
+Class: O    0.9806893 0.83327840    0.820695271          0.840432751         0.9332567
+Class: LOC  0.6735726 0.04059949    0.027105105          0.039882118         0.8271520
+Class: MISC 0.4487633 0.02458460    0.007387014          0.008337049         0.6497496
+Class: ORG  0.5008937 0.04056072    0.021734494          0.046222153         0.7551640
+Class: PER  0.7404674 0.06097679    0.046687477          0.065125928         0.8730120
+
+> cat('Test set B details: \n')
+Test set B details: 
+> mx_b
+Confusion Matrix and Statistics
+
+          Reference
+Prediction     O   LOC  MISC   ORG   PER
+      O    37680   112   239   299   156
+      LOC    154  1246    77   292   155
+      MISC    18     9   307    19     1
+      ORG    411   306   193  1320   380
+      PER    290   252   102   566  2081
+
+Overall Statistics
+                                         
+               Accuracy : 0.9136         
+                 95% CI : (0.911, 0.9162)
+    No Information Rate : 0.8262         
+    P-Value [Acc > NIR] : < 2.2e-16      
+                                         
+                  Kappa : 0.721          
+ Mcnemar's Test P-Value : < 2.2e-16      
+
+Statistics by Class:
+
+                     Class: O Class: LOC Class: MISC Class: ORG Class: PER
+Sensitivity            0.9774    0.64727    0.334423    0.52885    0.75045
+Specificity            0.9006    0.98485    0.998973    0.97079    0.97243
+Pos Pred Value         0.9791    0.64761    0.867232    0.50575    0.63233
+Neg Pred Value         0.8933    0.98482    0.986807    0.97331    0.98405
+Prevalence             0.8262    0.04125    0.019672    0.05349    0.05942
+Detection Rate         0.8075    0.02670    0.006579    0.02829    0.04459
+Detection Prevalence   0.8247    0.04123    0.007586    0.05593    0.07052
+Balanced Accuracy      0.9390    0.81606    0.666698    0.74982    0.86144
+> mx_b[4]
+$byClass
+            Sensitivity Specificity Pos Pred Value Neg Pred Value Precision    Recall
+Class: O      0.9773558   0.9006410      0.9790573      0.8932632 0.9790573 0.9773558
+Class: LOC    0.6472727   0.9848458      0.6476091      0.9848238 0.6476091 0.6472727
+Class: MISC   0.3344227   0.9989726      0.8672316      0.9868066 0.8672316 0.3344227
+Class: ORG    0.5288462   0.9707940      0.5057471      0.9733061 0.5057471 0.5288462
+Class: PER    0.7504508   0.9724323      0.6323306      0.9840457 0.6323306 0.7504508
+                   F1 Prevalence Detection Rate Detection Prevalence Balanced Accuracy
+Class: O    0.9782058 0.82616522    0.807457409          0.824729455         0.9389984
+Class: LOC  0.6474409 0.04125147    0.026700954          0.041230044         0.8160593
+Class: MISC 0.4827044 0.01967213    0.006578806          0.007585985         0.6666976
+Class: ORG  0.5170388 0.05348762    0.028286725          0.055930569         0.7498201
+Class: PER  0.6863456 0.05942355    0.044594450          0.070523947         0.8614416
+
+> cat('Test set C details: \n')
+Test set C details: 
+> mx_c
+Confusion Matrix and Statistics
+
+          Reference
+Prediction  O LOC MISC ORG PER
+      O    61   0    0   2   0
+      LOC   0   0    0   1   0
+      MISC  0   0    1   0   0
+      ORG   0   0    1   3   0
+      PER   0   0    0   1   2
+
+Overall Statistics
+                                          
+               Accuracy : 0.9306          
+                 95% CI : (0.8453, 0.9771)
+    No Information Rate : 0.8472          
+    P-Value [Acc > NIR] : 0.0275          
+                                          
+                  Kappa : 0.7241          
+ Mcnemar's Test P-Value : NA              
+
+Statistics by Class:
+
+                     Class: O Class: LOC Class: MISC Class: ORG Class: PER
+Sensitivity            1.0000         NA     0.50000    0.42857    1.00000
+Specificity            0.8182    0.98611     1.00000    0.98462    0.98571
+Pos Pred Value         0.9683         NA     1.00000    0.75000    0.66667
+Neg Pred Value         1.0000         NA     0.98592    0.94118    1.00000
+Prevalence             0.8472    0.00000     0.02778    0.09722    0.02778
+Detection Rate         0.8472    0.00000     0.01389    0.04167    0.02778
+Detection Prevalence   0.8750    0.01389     0.01389    0.05556    0.04167
+Balanced Accuracy      0.9091         NA     0.75000    0.70659    0.99286
+> mx_c[4]
+$byClass
+            Sensitivity Specificity Pos Pred Value Neg Pred Value Precision    Recall
+Class: O      1.0000000   0.8181818      0.9682540      1.0000000 0.9682540 1.0000000
+Class: LOC           NA   0.9861111             NA             NA 0.0000000        NA
+Class: MISC   0.5000000   1.0000000      1.0000000      0.9859155 1.0000000 0.5000000
+Class: ORG    0.4285714   0.9846154      0.7500000      0.9411765 0.7500000 0.4285714
+Class: PER    1.0000000   0.9857143      0.6666667      1.0000000 0.6666667 1.0000000
+                   F1 Prevalence Detection Rate Detection Prevalence Balanced Accuracy
+Class: O    0.9838710 0.84722222     0.84722222           0.87500000         0.9090909
+Class: LOC         NA 0.00000000     0.00000000           0.01388889                NA
+Class: MISC 0.6666667 0.02777778     0.01388889           0.01388889         0.7500000
+Class: ORG  0.5454545 0.09722222     0.04166667           0.05555556         0.7065934
+Class: PER  0.8000000 0.02777778     0.02777778           0.04166667         0.9928571

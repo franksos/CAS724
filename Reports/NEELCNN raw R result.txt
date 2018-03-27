@@ -1,0 +1,139 @@
+Train on 6433 samples, validate on 338 samples
+Epoch 1/20
+6433/6433 [==============================] - 5s 724us/step - loss: 1.7932 - acc: 0.2824 - val_loss: 1.7922 - val_acc: 0.3550
+Epoch 2/20
+6433/6433 [==============================] - 2s 381us/step - loss: 1.6874 - acc: 0.3264 - val_loss: 1.8347 - val_acc: 0.2781
+Epoch 3/20
+6433/6433 [==============================] - 2s 311us/step - loss: 1.6574 - acc: 0.3317 - val_loss: 1.8026 - val_acc: 0.3432
+Epoch 4/20
+6433/6433 [==============================] - 2s 320us/step - loss: 1.6216 - acc: 0.3470 - val_loss: 1.8111 - val_acc: 0.2988
+Epoch 5/20
+6433/6433 [==============================] - 2s 333us/step - loss: 1.5989 - acc: 0.3518 - val_loss: 1.7997 - val_acc: 0.2988
+Epoch 6/20
+6433/6433 [==============================] - 2s 327us/step - loss: 1.5829 - acc: 0.3546 - val_loss: 1.8664 - val_acc: 0.2722
+Epoch 7/20
+6433/6433 [==============================] - 2s 332us/step - loss: 1.5567 - acc: 0.3631 - val_loss: 1.7845 - val_acc: 0.2870
+Epoch 8/20
+6433/6433 [==============================] - 2s 358us/step - loss: 1.5490 - acc: 0.3606 - val_loss: 1.7798 - val_acc: 0.2959
+Epoch 9/20
+6433/6433 [==============================] - 2s 353us/step - loss: 1.5319 - acc: 0.3742 - val_loss: 1.7727 - val_acc: 0.2811
+Epoch 10/20
+6433/6433 [==============================] - 2s 309us/step - loss: 1.5186 - acc: 0.3910 - val_loss: 1.7842 - val_acc: 0.2722
+Epoch 11/20
+6433/6433 [==============================] - 2s 304us/step - loss: 1.5111 - acc: 0.3953 - val_loss: 1.8269 - val_acc: 0.2781
+Epoch 12/20
+6433/6433 [==============================] - 2s 307us/step - loss: 1.4970 - acc: 0.4003 - val_loss: 1.8221 - val_acc: 0.2781
+Epoch 13/20
+6433/6433 [==============================] - 2s 314us/step - loss: 1.4986 - acc: 0.3965 - val_loss: 1.8062 - val_acc: 0.2840
+Epoch 14/20
+6433/6433 [==============================] - 2s 328us/step - loss: 1.4845 - acc: 0.4029 - val_loss: 1.8125 - val_acc: 0.2811
+Epoch 15/20
+6433/6433 [==============================] - 2s 323us/step - loss: 1.4791 - acc: 0.4082 - val_loss: 1.8430 - val_acc: 0.2751
+Epoch 16/20
+6433/6433 [==============================] - 2s 313us/step - loss: 1.4694 - acc: 0.4113 - val_loss: 1.8773 - val_acc: 0.2722
+Epoch 17/20
+6433/6433 [==============================] - 2s 318us/step - loss: 1.4681 - acc: 0.4081 - val_loss: 2.0052 - val_acc: 0.2781
+Epoch 18/20
+6433/6433 [==============================] - 2s 309us/step - loss: 1.4589 - acc: 0.4185 - val_loss: 1.8606 - val_acc: 0.2959
+Epoch 19/20
+6433/6433 [==============================] - 2s 304us/step - loss: 1.4505 - acc: 0.4194 - val_loss: 1.9227 - val_acc: 0.2663
+Epoch 20/20
+6433/6433 [==============================] - 2s 309us/step - loss: 1.4487 - acc: 0.4203 - val_loss: 1.8435 - val_acc: 0.2899
+> end_time <- Sys.time()
+> 
+> scores <- model %>% evaluate(x_test, y_test, verbose = 0)
+> 
+> # Output metrics
+> start_time
+[1] "2018-03-24 12:13:12 EDT"
+> end_time
+[1] "2018-03-24 12:14:01 EDT"
+> 
+> # Report of three test groups
+> cat('Test loss:', scores[[1]], '\n')
+Test loss: 1.997717 
+> cat('Test accuracy:', scores[[2]], '\n')
+Test accuracy: 0.2063492 
+> 
+> # Further reports - report precision, recall and F1 score
+> y_pred <- model %>% predict_classes(x_test) %>% factor(levels = c(1:7))
+> 
+> entitylevel <- c("Character","Event","Location", 
++                  "Organization", "Person","Product","Thing"  )
+> levels(y_pred) <- entitylevel
+> 
+> y_truth <- readRDS('NEEL2016/NEELy_truth.rds')
+> 
+> mx <- confusionMatrix(y_pred, y_truth)
+> 
+> cat('Test details: \n')
+Test details: 
+> mx
+Confusion Matrix and Statistics
+
+              Reference
+Prediction     Character Event Location Organization Person Product Thing
+  Character            0     0        0            0      0       0     0
+  Event                0     0        0            3      2      23     1
+  Location            10     8       14           27     35      47    12
+  Organization         5     1        1            3      8      16     2
+  Person               6     2        7           34     73      29     4
+  Product              0     0        0            4      4       1     0
+  Thing                0     1        1            3     12      42     0
+
+Overall Statistics
+                                          
+               Accuracy : 0.2063          
+                 95% CI : (0.1695, 0.2472)
+    No Information Rate : 0.3583          
+    P-Value [Acc > NIR] : 1               
+                                          
+                  Kappa : 0.0625          
+ Mcnemar's Test P-Value : NA              
+
+Statistics by Class:
+
+                     Class: Character Class: Event Class: Location Class: Organization
+Sensitivity                   0.00000      0.00000         0.60870            0.040541
+Specificity                   1.00000      0.93240         0.66746            0.910082
+Pos Pred Value                    NaN      0.00000         0.09150            0.083333
+Neg Pred Value                0.95238      0.97087         0.96875            0.824691
+Prevalence                    0.04762      0.02721         0.05215            0.167800
+Detection Rate                0.00000      0.00000         0.03175            0.006803
+Detection Prevalence          0.00000      0.06576         0.34694            0.081633
+Balanced Accuracy             0.50000      0.46620         0.63808            0.475311
+                     Class: Person Class: Product Class: Thing
+Sensitivity                 0.5448       0.006329      0.00000
+Specificity                 0.7329       0.971731      0.86019
+Pos Pred Value              0.4710       0.111111      0.00000
+Neg Pred Value              0.7867       0.636574      0.95026
+Prevalence                  0.3039       0.358277      0.04308
+Detection Rate              0.1655       0.002268      0.00000
+Detection Prevalence        0.3515       0.020408      0.13379
+Balanced Accuracy           0.6388       0.489030      0.43009
+> mx[4]
+$byClass
+                    Sensitivity Specificity Pos Pred Value Neg Pred Value  Precision
+Class: Character    0.000000000   1.0000000            NaN      0.9523810         NA
+Class: Event        0.000000000   0.9324009     0.00000000      0.9708738 0.00000000
+Class: Location     0.608695652   0.6674641     0.09150327      0.9687500 0.09150327
+Class: Organization 0.040540541   0.9100817     0.08333333      0.8246914 0.08333333
+Class: Person       0.544776119   0.7328990     0.47096774      0.7867133 0.47096774
+Class: Product      0.006329114   0.9717314     0.11111111      0.6365741 0.11111111
+Class: Thing        0.000000000   0.8601896     0.00000000      0.9502618 0.00000000
+                         Recall         F1 Prevalence Detection Rate Detection Prevalence
+Class: Character    0.000000000         NA 0.04761905    0.000000000           0.00000000
+Class: Event        0.000000000        NaN 0.02721088    0.000000000           0.06575964
+Class: Location     0.608695652 0.15909091 0.05215420    0.031746032           0.34693878
+Class: Organization 0.040540541 0.05454545 0.16780045    0.006802721           0.08163265
+Class: Person       0.544776119 0.50519031 0.30385488    0.165532880           0.35147392
+Class: Product      0.006329114 0.01197605 0.35827664    0.002267574           0.02040816
+Class: Thing        0.000000000        NaN 0.04308390    0.000000000           0.13378685
+                    Balanced Accuracy
+Class: Character            0.5000000
+Class: Event                0.4662005
+Class: Location             0.6380799
+Class: Organization         0.4753111
+Class: Person               0.6388376
+Class: Product              0.4890303
+Class: Thing                0.4300948
