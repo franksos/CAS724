@@ -73,7 +73,7 @@ ds$POS <- factor(ds$POS)
 pos <- as.integer(ds$POS) / max(as.integer(ds$POS))
 pos[is.na(pos)] <- 0
 # Normalize chunk tag
-ds$chk <- factor(ds$chk)
+ds$chunk <- factor(ds$chunk)
 chk <- as.integer(ds$chunk) / max(as.integer(ds$chunk))
 chk[is.na(chk)] <- 0
 # combine xe, #of characters, pos and chk (altogether 20 features), and add ds file entity (y-axis)
