@@ -1,0 +1,45 @@
+Confusion Matrix and Statistics
+
+          Reference
+Prediction     O   LOC  MISC   ORG   PER
+      O    81147   521   449  1086  2562
+      LOC     36  3237    38   327    54
+      MISC   120    31  1625    94    15
+      ORG    202   203    59  3033    53
+      PER     56    27    17    50  3236
+
+Overall Statistics
+                                          
+               Accuracy : 0.9389          
+                 95% CI : (0.9374, 0.9404)
+    No Information Rate : 0.8299          
+    P-Value [Acc > NIR] : < 2.2e-16       
+                                          
+                  Kappa : 0.7739          
+ Mcnemar's Test P-Value : < 2.2e-16       
+
+Statistics by Class:
+
+                     Class: O Class: LOC Class: MISC Class: ORG Class: PER
+Sensitivity            0.9949    0.80542     0.74269    0.66078    0.54662
+Specificity            0.7238    0.99517     0.99729    0.99448    0.99838
+Pos Pred Value         0.9462    0.87676     0.86207    0.85437    0.95570
+Neg Pred Value         0.9669    0.99173     0.99416    0.98356    0.97172
+Prevalence             0.8299    0.04089     0.02226    0.04670    0.06024
+Detection Rate         0.8257    0.03294     0.01653    0.03086    0.03293
+Detection Prevalence   0.8727    0.03757     0.01918    0.03612    0.03445
+Balanced Accuracy      0.8593    0.90030     0.86999    0.82763    0.77250
+> mx[4]
+$byClass
+            Sensitivity Specificity Pos Pred Value Neg Pred Value Precision    Recall
+Class: O      0.9949240   0.7237543      0.9461552      0.9669144 0.9461552 0.9949240
+Class: LOC    0.8054242   0.9951729      0.8767606      0.9917324 0.8767606 0.8054242
+Class: MISC   0.7426874   0.9972942      0.8620690      0.9941593 0.8620690 0.7426874
+Class: ORG    0.6607843   0.9944817      0.8543662      0.9835635 0.8543662 0.6607843
+Class: PER    0.5466216   0.9983759      0.9556999      0.9717152 0.9556999 0.5466216
+                   F1 Prevalence Detection Rate Detection Prevalence Balanced Accuracy
+Class: O    0.9699270 0.82990089     0.82568835           0.87267751         0.8593392
+Class: LOC  0.8395798 0.04089420     0.03293718           0.03756690         0.9002986
+Class: MISC 0.7979376 0.02226338     0.01653473           0.01918028         0.8699908
+Class: ORG  0.7452088 0.04670425     0.03086143           0.03612202         0.8276330
+Class: PER  0.6954653 0.06023729     0.03292700           0.03445329         0.7724988
