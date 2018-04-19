@@ -1,0 +1,3 @@
+This hmm model code is copied from the public github project of tripleday:
+
+https://github.com/tripleday/simple_HMM
